@@ -27,6 +27,8 @@ vip() {
 # is MySQL running ?
 if [ `ps aux | grep mysqld | wc -l` -eq 0 ]; then
 	# DEAD
+	ifconfig $ETH:1 $VIPRW down
+	ifconfig $ETH:2 $VIPRO down
 	exit 1
 fi
 
