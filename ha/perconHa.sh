@@ -17,22 +17,22 @@ vip() {
 			ifconfig $ETH:1 $VIPRW
 		fi
 	else
-		ifconfig $ETH:1 $VIPRW down
+		ifconfig $ETH:1 $VIPRW down &> /dev/null
 	fi
 	if [ -f '/etc/perconHa/RO' ]; then
 		if [ `nc $VIPRO 3306 -w 1` -eq 0 ]; then
 			ifconfig $ETH:2 $VIPRO
 		fi
 	else
-		ifconfig $ETH:2 $VIPRO down
+		ifconfig $ETH:2 $VIPRO down &> /dev/null
 	fi
 }
 
 # is MySQL running ?
 if [ `ps aux | grep mysqld | wc -l` -eq 0 ]; then
 	# DEAD
-	ifconfig $ETH:1 $VIPRW down
-	ifconfig $ETH:2 $VIPRO down
+	ifconfig $ETH:1 $VIPRW down &> /dev/null
+	ifconfig $ETH:2 $VIPRO down &> /dev/null
 	exit 1
 fi
 
@@ -47,14 +47,14 @@ if [ $DY = "ON" ]; then
 		exit 0
 	else
 		# NOT SYNCED
-		ifconfig $ETH:1 $VIPRW down
-		ifconfig $ETH:2 $VIPRO down
+		ifconfig $ETH:1 $VIPRW down &> /dev/null
+		ifconfig $ETH:2 $VIPRO down &> /dev/null
 		exit 1
 	fi
 else
 	# NOT IN CLUSTER
-	ifconfig $ETH:1 $VIPRW down
-	ifconfig $ETH:2 $VIPRO down
+	ifconfig $ETH:1 $VIPRW down &> /dev/null
+	ifconfig $ETH:2 $VIPRO down &> /dev/null
 	exit 1
 fi
 
