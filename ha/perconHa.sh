@@ -18,7 +18,7 @@ vip() {
                 nc $VIPRW 3306 -w 1 &> /dev/null
                 if [ $? -ne 0 ]; then
 			echo "vip RW ON"
-			ifconfig $ETH:1 $VIPRW/32
+			ifconfig $ETH:1 $VIPRW netmask 255.255.255.255
 		fi
 	else
 		echo "vip RW OFF"
@@ -28,7 +28,7 @@ vip() {
                 nc $VIPRO 3306 -w 1 &> /dev/null
                 if [ $? -ne 0 ]; then
 			echo "vip RO ON"
-			ifconfig $ETH:2 $VIPRO/32
+			ifconfig $ETH:2 $VIPRO netmask 255.255.255.255
 		fi
 	else
 		echo "vip RO OFF"
