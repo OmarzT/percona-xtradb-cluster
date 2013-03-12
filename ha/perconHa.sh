@@ -13,18 +13,20 @@ export ETH='eth1'
 
 vip() {
 	if [ -f '/etc/perconHa/RW' ]; then
-		if [ `nc $VIPRW 3306 -w 1` -eq 0 ]; then
+                nc $VIPRW 3306 -w 1 &> /dev/null
+                if [ $? -ne 0 ]; then
 			echo "vip RW ON"
-			ifconfig $ETH:1 $VIPRW/255.255.255.255
+			ifconfig $ETH:1 $VIPRW/32
 		fi
 	else
 		echo "vip RW OFF"
 		ifconfig $ETH:1 $VIPRW down &> /dev/null
 	fi
 	if [ -f '/etc/perconHa/RO' ]; then
-		if [ `nc $VIPRO 3306 -w 1` -eq 0 ]; then
+                nc $VIPRO 3306 -w 1 &> /dev/null
+                if [ $? -ne 0 ]; then
 			echo "vip RO ON"
-			ifconfig $ETH:2 $VIPRO/255.255.255.255
+			ifconfig $ETH:2 $VIPRO/32
 		fi
 	else
 		echo "vip RO OFF"
