@@ -6,16 +6,16 @@ MYSQLPORT='3306'
 MYSQLUSER='perconha'
 MYSQLPASS='secret'
 
-VIPRO='127.0.0.2/32'
-VIPRW='127.0.0.3/32'
+export VIPRO='127.0.0.2'
+export VIPRW='127.0.0.3'
 
-ETH='eth1'
+export ETH='eth1'
 
 vip() {
 	if [ -f '/etc/perconHa/RW' ]; then
 		if [ `nc $VIPRW 3306 -w 1` -eq 0 ]; then
 			echo "vip RW ON"
-			ifconfig $ETH:1 $VIPRW
+			ifconfig $ETH:1 $VIPRW/255.255.255.255
 		fi
 	else
 		echo "vip RW OFF"
@@ -24,7 +24,7 @@ vip() {
 	if [ -f '/etc/perconHa/RO' ]; then
 		if [ `nc $VIPRO 3306 -w 1` -eq 0 ]; then
 			echo "vip RO ON"
-			ifconfig $ETH:2 $VIPRO
+			ifconfig $ETH:2 $VIPRO/255.255.255.255
 		fi
 	else
 		echo "vip RO OFF"
