@@ -11,6 +11,8 @@ export VIPRW='127.0.0.3'
 
 export ETH='eth1'
 
+export PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
 vip() {
 	if [ -f '/etc/perconHa/RW' ]; then
                 nc $VIPRW 3306 -w 1 &> /dev/null
