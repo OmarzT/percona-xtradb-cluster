@@ -38,7 +38,7 @@ fi
 
 # is in cluster ?
 RDY=`mysql --force -h $MYSQLHOST -P $MYSQLPORT -u $MYSQLUSER -p$MYSQLPASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_ready';" | awk '{ print $2 }'`
-if [ $DY = "ON" ]; then
+if [ $RDY = "ON" ]; then
 	# is synced ?
 	SYNC=`mysql --force -h $MYSQLHOST -P $MYSQLPORT -u $MYSQLUSERNAME -p$MYSQLPASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_local_state_comment';" | awk '{print $2}'`
 	if [ $SYNC = "Synced" ]; then
