@@ -37,9 +37,11 @@ if [ `ps aux | grep mysqld | wc -l` -eq 0 ]; then
 fi
 
 # is in cluster ?
-if [ `mysql --force -h $MYSQLHOST -P $MYSQLPORT -u $MYSQLUSER -p$MYSQLPASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_ready';" | awk '{ print $2 }'` = "ON" ]; then
+RDY=`mysql --force -h $MYSQLHOST -P $MYSQLPORT -u $MYSQLUSER -p$MYSQLPASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_ready';" | awk '{ print $2 }'`
+if [ $DY = "ON" ]; then
 	# is synced ?
-	if [ `mysql --force -h $MYSQLHOST -P $MYSQLPORT -u $MYSQLUSERNAME -p$MYSQLPASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_local_state_comment';" | awk '{print $2}'` = "Synced" ]; then
+	SYNC=`mysql --force -h $MYSQLHOST -P $MYSQLPORT -u $MYSQLUSERNAME -p$MYSQLPASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_local_state_comment';" | awk '{print $2}'`
+	if [ $SYNC = "Synced" ]; then
 		# SYNCED
 		vip
 		exit 0
