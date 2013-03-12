@@ -13,12 +13,16 @@ ETH='eth1'
 
 vip() {
 	if [ -f '/etc/perconHa/RW' ]; then
-		ifconfig $ETH:1 $VIPRW
+		if [ `nc $VIPRW 3306 -w 1` -eq 0 ]; then
+			ifconfig $ETH:1 $VIPRW
+		fi
 	else
 		ifconfig $ETH:1 $VIPRW down
 	fi
 	if [ -f '/etc/perconHa/RO' ]; then
-		ifconfig $ETH:2 $VIPRO
+		if [ `nc $VIPRO 3306 -w 1` -eq 0 ]; then
+			ifconfig $ETH:2 $VIPRO
+		fi
 	else
 		ifconfig $ETH:2 $VIPRO down
 	fi
