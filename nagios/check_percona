@@ -1,0 +1,93 @@
+#!/bin/bash
+# Author: Francois Aichelbaum
+# Date 12/28/2012
+# Description: check health for Percona XtraDB Cluster 5.5
+
+STATE_OK=0
+STATE_WARNING=1
+STATE_CRITICAL=2
+STATE_UNKNOWN=3
+
+usage() {
+    cat << EOF
+usage: $0 -H \$HOSTADDRESS\$ -p \$PORT\$ -w \$ARG1\$ -c \$ARG2\$ -t \$ARG3\$ \(-U \$ARG4\$ \(-P \$ARG5\$\)\)
+-H      hostname or IP
+-p      service port
+-w      warning in seconds for replication delay
+-c      critical in seconds for replication delay
+-t      timeout for command input
+-U	user if needed
+-P      password if needed
+EOF
+    exit $STATE_CRITICAL
+}
+
+case "$#" in
+	10|12|14)
+		continue
+		;;
+	*)
+		usage
+		;;
+esac
+
+while (( "$#" )); do
+    case "$1" in
+        '-H')
+            shift 
+            host=$1
+            ;;
+        '-p')
+            shift 
+            port=$1
+            ;;
+        '-w')
+            shift 
+            warn=$1
+            ;;
+        '-c') 
+            shift 
+            crit=$1
+            ;;
+        '-t')
+            shift 
+            timeout=$1
+            ;;
+	'-U') 
+            shift 
+            user=$1
+	    ;;
+        '-P')
+            shift 
+            password=$1
+            ;;
+        *)
+            usage
+            ;;
+    esac
+    shift
+done
+
+# Alive ?
+nc -z $host $port 2> /dev/null &> /dev/null
+if [ $? -ne 0 ]; then
+    echo "CRITICAL: mysql is not alive"
+    exit $STATE_CRITICAL
+fi
+
+# in cluster ?
+RDY=`mysql --force -h $MYSQLHOST -P $MYSQLPORT -u $MYSQLUSER -p$MYSQLPASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_ready';" | awk '{ print $2 }'`
+if [ $RDY != "ON" ]; then
+    echo "CRITICAL: mysql is not in cluster"
+    exit $STATE_CRITICAL
+fi
+
+# is synced ?
+SYNC=`mysql --force -h $MYSQLHOST -P $MYSQLPORT -u $MYSQLUSER -p$MYSQLPASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_local_state_comment';" | awk '{print $2}'`
+if [ $SYNC = "Synced" ]; then
+    echo "CRITICAL: mysql is not synced"
+    exit $STATE_CRITICAL
+fi
+
+echo "OK: mysql is running fine"
+exit $STATE_OK
