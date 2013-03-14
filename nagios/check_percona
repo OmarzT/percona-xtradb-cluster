@@ -24,7 +24,6 @@ EOF
 
 case "$#" in
 	10|12|14)
-		continue
 		;;
 	*)
 		usage
@@ -84,7 +83,7 @@ fi
 
 # is synced ?
 SYNC=`mysql --force -h $host -P $port -u $user -p$password -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_local_state_comment';" | awk '{print $2}'`
-if [ $SYNC = "Synced" ]; then
+if [ $SYNC != "Synced" ]; then
     echo "CRITICAL: mysql is not synced"
     exit $STATE_CRITICAL
 fi
