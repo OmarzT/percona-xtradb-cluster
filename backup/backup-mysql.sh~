@@ -26,7 +26,6 @@ echo "SHOW DATABASES;" | mysql -u $USER -h localhost -p$PASS | grep -v informati
 	chmod 600 $DATADIR/$DB/$FILENAME.tar.gz
 done
 
-# DISPATCH 
 for ip in `mysql -h localhost -u $USER -p $PASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_incoming_address';" | awk '{ print $2 }' | sed 's/:3306/\n/g' | sed 's/,//g' | grep -v "^$"`; do
 	ip a | grep $ip &> /dev/null
 	if [ $? -eq 0 ]; then
