@@ -16,14 +16,14 @@ if [ ! -f /etc/perconHa/BCK ]; then
 fi
 
 # CLEAN UP
-find $DATADIR -name "*.tar.gz" -mtime +$RETENTION -print -exec rm -f {} \;
+find $DATADIR -name "*.gz" -mtime +$RETENTION -print -exec rm -f {} \;
 
 # BACKUP
 echo "SHOW DATABASES;" | mysql -u $USER -h localhost -p$PASS | grep -v information_schema | grep -v Database | grep -v performance_schema | while read DB; do
 	mkdir -p $DATADIR/$DB
 	mysqldump -u $USER -p$PASS $DB > $DATADIR/$DB/$FILENAME
-	tar -czf $DATADIR/$DB/$FILENAME.tar.gz $DATADIR/$DB/$FILENAME
-	chmod 600 $DATADIR/$DB/$FILENAME.tar.gz
+	gzip $DATADIR/$DB/$FILENAME
+	chmod 600 $DATADIR/$DB/$FILENAME.gz
 done
 
 # DISPATCH 
