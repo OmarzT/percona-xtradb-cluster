@@ -31,7 +31,7 @@ for ip in `mysql -h localhost -u $USER -p $PASS -B -N -e "SHOW STATUS WHERE Vari
 	if [ $? -eq 0 ]; then
 		continue
 	fi
-	rsync -a --del --bwlimit=$BWLIMIT /backup/* $ip:/backup/ &> /dev/null
+	rsync -a --del --bwlimit=$BWLIMIT /backup/* $ip:/backup/ 
 done
 
 exit 0
