@@ -1,5 +1,5 @@
 #!/bin/bash
-# GRANT SELECT, LOCK TABLES, SHOW DATABASES ON *.* TO dump@localhost;
+# GRANT SELECT, LOCK TABLES, SHOW DATABASES ON *.* TO dump@localhost IDENTIFIED BY 'secret';
 # FLUSH privileges;
 
 PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
