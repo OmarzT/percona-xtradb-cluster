@@ -22,12 +22,12 @@ find $DATADIR -name "*.tar.gz" -mtime +$RETENTION -print -exec rm -f {} \;
 echo "SHOW DATABASES;" | mysql -u $USER -h localhost -p$PASS | grep -v information_schema | grep -v Database | while read DB; do
 	mkdir -p $DATADIR/$DB
 	mysqldump -u $USER -p$PASS $DB > $DATADIR/$DB/$FILENAME
-	tar -czf $DATADIR/$DB/$FILENAME.tar .gz $DATADIR/$DB/$FILENAME
+	tar -czf $DATADIR/$DB/$FILENAME.tar.gz $DATADIR/$DB/$FILENAME
 	chmod 600 $DATADIR/$DB/$FILENAME.tar.gz
 done
 
 # DISPATCH 
-for ip in `mysql -h localhost -u $USER -p $PASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_incoming_address';" | awk '{ print $2 }' | sed 's/:3306/\n/g' | sed 's/,//g' | grep -v "^$"`; do
+for ip in `mysql -h localhost -u $USER -p$PASS -B -N -e "SHOW STATUS WHERE Variable_name = 'wsrep_incoming_address';" | awk '{ print $2 }' | sed 's/:3306/\n/g' | sed 's/,//g' | grep -v "^$"`; do
 	ip a | grep $ip &> /dev/null
 	if [ $? -eq 0 ]; then
 		continue
